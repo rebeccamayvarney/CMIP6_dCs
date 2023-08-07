@@ -88,6 +88,34 @@ cmip5_deltaNEPdeltatau_rcp85 = np.load('saved_data/cmip5_deltaNEPdeltatau_rcp85.
 cmip5_NEPdeltatau_rcp85 = np.load('saved_data/cmip5_NEPdeltatau_rcp85.npy')
 
 
+std_Cs_cmip5 = np.std(cmip5_deltaCs_rcp85)
+print('std dCs RCP8.5', std_Cs_cmip5)
+std_dCsnpp_cmip5 = np.std(cmip5_deltaCsRh_rcp85)
+print('std dCs,npp RCP8.5', std_dCsnpp_cmip5)
+std_dCstau_cmip5 = np.std(cmip5_deltaCstau_rcp85)
+print('std dCs,tau RCP8.5', std_dCstau_cmip5)
+
+std_Cs_cmip6 = np.std(cmip6_deltaCs_ssp585)
+print('std dCs SSp585', std_Cs_cmip6)
+std_dCsnpp = np.std(cmip6_deltaCsRh_ssp585)
+print('std dCs,npp SSP585', std_dCsnpp)
+std_dCstau = np.std(cmip6_deltaCstau_ssp585)
+print('std dCs,tau SSP585', std_dCstau)
+
+
+## r
+r_cmip5 = np.corrcoef(cmip5_deltaCstau_rcp85, cmip5_deltaCsRh_rcp85)
+c_term_cmip5 = 2*r_cmip5[0,1]*std_dCsnpp_cmip5*std_dCstau_cmip5
+
+r_cmip6 = np.corrcoef(cmip6_deltaCstau_ssp585, cmip6_deltaCsRh_ssp585)
+c_term_cmip6 = 2*r_cmip6[0,1]*std_dCsnpp*std_dCstau
+
+
+cmip5_1 = std_dCsnpp_cmip5**2/std_Cs_cmip5**2 + std_dCstau_cmip5**2/std_Cs_cmip5**2 + c_term_cmip5/std_Cs_cmip5**2
+
+cmip6_1 = std_dCsnpp**2/std_Cs_cmip6**2 + std_dCstau**2/std_Cs_cmip6**2 + c_term_cmip6/std_Cs_cmip6**2
+
+
 #%% Merging CMIP5 & CMIP6
 
 # dCs
@@ -103,7 +131,7 @@ cmip6_CsTAU = np.concatenate([cmip6_deltaCstau_ssp126, cmip6_deltaCstau_ssp245, 
 
 #%% Setting up the figure
 
-fig_figure1 = plt.figure(1, figsize=(48,38))
+fig_figure1 = plt.figure(1, figsize=(58,38))
 gs = gspec.GridSpec(2, 3, figure=fig_figure1, hspace=0.5, wspace=0.4)
 mpl.rcParams['xtick.direction'] = 'out'
 mpl.rcParams['ytick.direction'] = 'out'
@@ -351,5 +379,5 @@ plt.setp(plt.gca().get_xticklabels(), rotation=45, horizontalalignment='right')
 
 
 #%%
-fig_figure1.savefig('figures/dCs_breakdown_barchart_cmip5cmip6_v4', bbox_inches='tight')
+fig_figure1.savefig('figures/poster_v2', bbox_inches='tight')
 plt.close()
